@@ -1,0 +1,19 @@
+# typical documentation generation from the docs/ subfolder
+# uses the latest stable version of Julia
+
+# NOTE: not using the Manifest (develop instead of instantiate) due to Pkg.jl#1423
+
+documentation:
+  stage: post
+  extends: .root
+  variables:
+    CI_VERSION_TAG: 'v1.2'
+    DOCUMENTER_DEBUG: "true"
+  script:
+    - julia --project=docs/ -e 'using Pkg;
+                                Pkg.develop(PackageSpec(path=pwd()));
+                                Pkg.instantiate()'
+    - julia --project=docs/ docs/make.jl
+  artifacts:
+    paths:
+    - docs/build
